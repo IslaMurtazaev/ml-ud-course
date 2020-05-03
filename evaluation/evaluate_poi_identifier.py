@@ -26,6 +26,55 @@ labels, features = targetFeatureSplit(data)
 
 
 
-### your code goes here 
+from sklearn.cross_validation import train_test_split
+features_train, features_test, labels_train, labels_test =\
+    train_test_split(features, labels, test_size=0.3, random_state=42)
+
+
+from sklearn.tree import DecisionTreeClassifier
+
+clf = DecisionTreeClassifier()
+clf.fit(features_train, labels_train)
+
+print 'num of all people in test set', len(labels_test)
+print 'num of POIs in test set', sum(labels_test)
+
+prediction = clf.predict(features_test)
+print 'prediction', prediction
+print 'real values', labels_test
+
+true_positives = 0
+for i in range(len(labels_test)):
+    if labels_test[i] and prediction[i]:
+        true_positives += 1
+
+print 'num of true positives', true_positives
+
+
+from sklearn.metrics import precision_score, recall_score
+
+print 'precision', precision_score(labels_test, prediction)
+print 'recall', recall_score(labels_test, prediction)
+print 'accuracy', clf.score(features_test, labels_test)
+
+
+predictions = [0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1]
+true_labels = [0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0]
+
+true_positives = 0
+false_positives = 0
+false_negatives = 0
+for i in range(len(true_labels)):
+    if predictions[i]:
+        if true_labels[i]:
+            true_positives += 1
+        else:
+            false_positives += 1
+    elif true_labels[i]:
+        false_negatives += 1
+
+
+print 'precision formula', true_positives / float(true_positives + false_positives)
+print 'recall formula', true_positives / float(true_positives + false_negatives)
 
 
